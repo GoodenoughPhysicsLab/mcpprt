@@ -80,7 +80,7 @@ struct static_vector {
     template<typename U, ::std::size_t N_r>
     [[nodiscard]]
     constexpr bool operator==(this ::mcpprt::container::static_vector<T, N> const& self,
-                              static_vector<U, N_r> const& other) noexcept {
+                              ::mcpprt::container::static_vector<U, N_r> const& other) noexcept {
         return self == other.value_;
     }
 

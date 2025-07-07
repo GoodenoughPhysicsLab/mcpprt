@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <utility>
+#include <algorithm>
 #include <exception/exception.hh>
 
 namespace mcpprt::container {
@@ -12,6 +13,8 @@ namespace mcpprt::container {
  */
 template<typename T, ::std::size_t N>
 struct array {
+    static_assert(N > 0, "N must be greater than 0");
+
     using value_type = T;
     using size_type = ::std::size_t;
     using diffrence_type = ::std::ptrdiff_t;
@@ -23,6 +26,23 @@ struct array {
     using const_iterator = value_type const*;
 
     T value_[N];
+
+    template<typename U, ::std::size_t N_r>
+    [[nodiscard]]
+    constexpr bool operator==(this ::mcpprt::container::array<T, N> const& self, U const (&other)[N_r]) noexcept {
+        if constexpr (sizeof(N) != sizeof(N_r) || ::std::is_unsigned_v<T> ^ ::std::is_unsigned_v<U> || N != N_r) {
+            return false;
+        } else {
+            return ::std::equal(self.value_, self.value_ + N - 1, other);
+        }
+    }
+
+    template<typename U, ::std::size_t N_r>
+    [[nodiscard]]
+    constexpr bool operator==(this ::mcpprt::container::array<T, N> const& self,
+                              ::mcpprt::container::array<U, N_r> const& other) noexcept {
+        return self == other.value_;
+    }
 
     template<bool ndebug = false>
     constexpr auto&& operator[](this auto&& self, ::std::size_t index) noexcept {
@@ -61,6 +81,19 @@ struct array {
 
     constexpr auto cend(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_.cend();
+    }
+
+    // TODO add reverse iterator support
+
+    static constexpr auto size() noexcept -> size_type {
+        return N;
+    }
+
+    /**
+     * @note swap force requires a lvalue
+     */
+    constexpr void swap(this ::mcpprt::container::array<T, N>& self, ::mcpprt::container::array<T, N>& other) noexcept {
+        ::std::swap_ranges(self.begin(), self.end(), other.begin());
     }
 };
 

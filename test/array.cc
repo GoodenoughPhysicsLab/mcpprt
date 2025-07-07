@@ -1,5 +1,4 @@
 #include <mcpprt/container/array.hh>
-#include <array>
 
 consteval void test_init() noexcept {
     [[maybe_unused]] ::mcpprt::container::array _0{1, 2, 3};
@@ -15,8 +14,5 @@ consteval void test_index() noexcept {
 }
 
 int main() noexcept {
-    ::std::array arr{1, 2};
-    arr.rbegin();
-
     return 0;
 }

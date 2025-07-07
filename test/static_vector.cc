@@ -7,7 +7,8 @@
 struct X {};
 
 template<::mcpprt::container::static_vector str>
-constexpr void useless() noexcept {}
+constexpr void useless() noexcept {
+}
 
 consteval void test_init() noexcept {
     [[maybe_unused]] constexpr auto _1 = ::mcpprt::container::static_vector{X{}, X{}};
