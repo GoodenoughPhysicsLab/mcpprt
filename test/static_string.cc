@@ -24,31 +24,44 @@ consteval void test_index() noexcept {
 
 consteval void test_str_eq() noexcept {
     static_assert(::mcpprt::container::make_static_string<"abc">() == ::mcpprt::container::make_static_string<"abc">());
-    static_assert(::mcpprt::container::make_static_string<"abc">() == ::mcpprt::container::make_static_string<"abc\0\0">());
-    static_assert(::mcpprt::container::make_static_string<"abc">() != ::mcpprt::container::make_static_string<"abcd">());
+    static_assert(::mcpprt::container::make_static_string<"abc">() ==
+                  ::mcpprt::container::make_static_string<"abc\0\0">());
+    static_assert(::mcpprt::container::make_static_string<"abc">() !=
+                  ::mcpprt::container::make_static_string<"abcd">());
     static_assert(::mcpprt::container::make_static_string<"abc">() != ::mcpprt::container::make_static_string<"ab">());
-    static_assert(::mcpprt::container::make_static_string<"abc">() == ::mcpprt::container::make_static_string<{'a', 'b', 'c'}>());
-    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() == ::mcpprt::container::make_static_string<"hello">());
-    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() != ::mcpprt::container::make_static_string<"hello0">());
-    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() == ::mcpprt::container::make_static_string<"hello\0\0\0\0">());
-    static_assert(::mcpprt::container::make_static_string<u8"abc">() == ::mcpprt::container::make_static_string<"abc">());
-    static_assert(::mcpprt::container::make_static_string<u8"ab">() != ::mcpprt::container::make_static_string<"abc">());
-    static_assert(::mcpprt::container::make_static_string<u8"abcd">() != ::mcpprt::container::make_static_string<"abc">());
-    static_assert(::mcpprt::container::make_static_string<u"滑稽">() != ::mcpprt::container::make_static_string<u8"滑稽">()); // NOTE: fucking encoding
-    static_assert(::mcpprt::container::make_static_string<"ello,.">() != ::mcpprt::container::make_static_string<"ello, ">());
+    static_assert(::mcpprt::container::make_static_string<"abc">() ==
+                  ::mcpprt::container::make_static_string<{'a', 'b', 'c'}>());
+    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() ==
+                  ::mcpprt::container::make_static_string<"hello">());
+    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() !=
+                  ::mcpprt::container::make_static_string<"hello0">());
+    static_assert(::mcpprt::container::make_static_string<"hello\0aa">() ==
+                  ::mcpprt::container::make_static_string<"hello\0\0\0\0">());
+    static_assert(::mcpprt::container::make_static_string<u8"abc">() ==
+                  ::mcpprt::container::make_static_string<"abc">());
+    static_assert(::mcpprt::container::make_static_string<u8"ab">() !=
+                  ::mcpprt::container::make_static_string<"abc">());
+    static_assert(::mcpprt::container::make_static_string<u8"abcd">() !=
+                  ::mcpprt::container::make_static_string<"abc">());
+    static_assert(::mcpprt::container::make_static_string<u"滑稽">() !=
+                  ::mcpprt::container::make_static_string<u8"滑稽">()); // NOTE: fucking encoding
+    static_assert(::mcpprt::container::make_static_string<"ello,.">() !=
+                  ::mcpprt::container::make_static_string<"ello, ">());
 }
 
 consteval void test_concat() noexcept {
-    static_assert(::mcpprt::container::concat(::mcpprt::container::make_static_string<"abc">(), ::mcpprt::container::make_static_string<"def">()) == ::mcpprt::container::make_static_string<"abcdef">());
+    static_assert(::mcpprt::container::concat(::mcpprt::container::make_static_string<"abc">(),
+                                              ::mcpprt::container::make_static_string<"def">()) ==
+                  ::mcpprt::container::make_static_string<"abcdef">());
     constexpr auto str1 = ::mcpprt::container::make_static_string<"abc">();
     constexpr auto str2 = ::mcpprt::container::make_static_string<"def">();
     static_assert(::mcpprt::container::concat(str1, str2) == ::mcpprt::container::make_static_string<"abcdef">());
     static_assert(::mcpprt::container::concat(str1, str2) != ::mcpprt::container::make_static_string<"abcdeg">());
-    static_assert(::mcpprt::container::concat(
-        ::mcpprt::container::make_static_string<u8"abc">(),
-        ::mcpprt::container::make_static_string<u8"def">(),
-        ::mcpprt::container::make_static_string<u8"2333">(),
-        ::mcpprt::container::make_static_string<u8"滑稽">()) == ::mcpprt::container::make_static_string<u8"abcdef2333滑稽">());
+    static_assert(::mcpprt::container::concat(::mcpprt::container::make_static_string<u8"abc">(),
+                                              ::mcpprt::container::make_static_string<u8"def">(),
+                                              ::mcpprt::container::make_static_string<u8"2333">(),
+                                              ::mcpprt::container::make_static_string<u8"滑稽">()) ==
+                  ::mcpprt::container::make_static_string<u8"abcdef2333滑稽">());
 }
 
 consteval void test_pop_back() noexcept {

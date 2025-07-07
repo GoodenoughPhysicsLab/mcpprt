@@ -61,7 +61,7 @@ struct array {
 #elif __has_cpp_attribute(msvc::forceinline)
     [[msvc::forceinline]]
 #endif
-[[nodiscard]]
+    [[nodiscard]]
     constexpr auto&& at(this auto&& self, ::std::size_t index) noexcept {
         ::exception::assert_true(index < N);
         return ::std::forward_like<decltype(self)>(self.value_[index]);
@@ -72,7 +72,7 @@ struct array {
 #elif __has_cpp_attribute(msvc::forceinline)
     [[msvc::forceinline]]
 #endif
-[[nodiscard]]
+    [[nodiscard]]
     constexpr auto&& front(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.value_[0]);
     }
@@ -82,7 +82,7 @@ struct array {
 #elif __has_cpp_attribute(msvc::forceinline)
     [[msvc::forceinline]]
 #endif
-[[nodiscard]]
+    [[nodiscard]]
     constexpr auto&& back(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.value_[N - 1]);
     }

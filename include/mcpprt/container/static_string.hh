@@ -12,10 +12,9 @@
 namespace mcpprt::container {
 
 template<typename Char>
-concept is_char =
-    std::same_as<::std::remove_cv_t<Char>, char> || std::same_as<::std::remove_cv_t<Char>, wchar_t>
-    || ::std::same_as<::std::remove_cv_t<Char>, char8_t>
-    || std::same_as<::std::remove_cv_t<Char>, char16_t> || std::same_as<::std::remove_cv_t<Char>, char32_t>;
+concept is_char = std::same_as<::std::remove_cv_t<Char>, char> || std::same_as<::std::remove_cv_t<Char>, wchar_t> ||
+                  ::std::same_as<::std::remove_cv_t<Char>, char8_t> ||
+                  std::same_as<::std::remove_cv_t<Char>, char16_t> || std::same_as<::std::remove_cv_t<Char>, char32_t>;
 
 namespace details::transcoding {
 
@@ -90,12 +89,14 @@ struct basic_static_string {
     }
 
     [[nodiscard]]
-    constexpr auto begin(this ::mcpprt::container::basic_static_string<Char, N> const& self) noexcept -> const_iterator {
+    constexpr auto begin(this ::mcpprt::container::basic_static_string<Char, N> const& self) noexcept
+        -> const_iterator {
         return self.str_.begin();
     }
 
     [[nodiscard]]
-    constexpr auto cbegin(this ::mcpprt::container::basic_static_string<Char, N> const& self) noexcept -> const_iterator {
+    constexpr auto cbegin(this ::mcpprt::container::basic_static_string<Char, N> const& self) noexcept
+        -> const_iterator {
         return self.str_.begin();
     }
 
@@ -123,7 +124,7 @@ struct basic_static_string {
     template<is_char Char_r, ::std::size_t N_r>
     [[nodiscard]]
     constexpr bool operator==(this ::mcpprt::container::basic_static_string<Char, N> const& self,
-        ::mcpprt::container::basic_static_string<Char_r, N_r> const& other) noexcept {
+                              ::mcpprt::container::basic_static_string<Char_r, N_r> const& other) noexcept {
         if constexpr (N == N_r) {
             return ::std::equal(self.cbegin(), self.cend(), other.begin(), other.end());
         } else {
@@ -140,8 +141,7 @@ consteval auto make_static_string() noexcept {
         ::mcpprt::container::basic_static_string<typename decltype(str)::value_type, str.size()> result;
         ::std::copy(str.cbegin(), str.cend(), result.begin());
         return result;
-    } else
-    if constexpr (str.template at<Index>() == '\0') {
+    } else if constexpr (str.template at<Index>() == '\0') {
         ::mcpprt::container::basic_static_string<typename decltype(str)::value_type, Index> result;
         ::std::copy(str.cbegin(), str.cbegin() + Index, result.begin());
         return result;
@@ -150,7 +150,7 @@ consteval auto make_static_string() noexcept {
     }
 }
 
-}
+} // namespace details
 
 template<::mcpprt::container::static_vector str>
 consteval auto make_static_string() noexcept {
