@@ -163,8 +163,8 @@ struct static_vector {
     }
 
     [[nodiscard]]
-    constexpr const_pointer data(this static_vector<T, N> const& self) noexcept {
-        return self.value_;
+    constexpr auto&& data(this auto&& self) noexcept {
+        return ::std::forward_like<decltype(self)>(self.value_);
     }
 
     template<::std::size_t Start, ::std::size_t End>
@@ -244,5 +244,14 @@ template<typename First, typename... Rest>
     requires (!(::mcpprt::concepts::is_c_array<First> && sizeof...(Rest) == 0) &&
               (::std::same_as<::std::remove_cvref_t<First>, ::std::remove_cvref_t<Rest>> && ...))
 static_vector(First&&, Rest&&...) -> static_vector<First, sizeof...(Rest) + 1>;
+
+template<typename T, ::std::size_t N>
+constexpr ::mcpprt::container::static_vector<T, N> make_static_vector(T const (&arr)[N]) noexcept {
+    ::mcpprt::container::static_vector<T, N> result;
+    for (::std::size_t i{}; i < N; ++i) {
+        result.value_[i] = arr[i];
+    }
+    return result;
+}
 
 } // namespace mcpprt::container
