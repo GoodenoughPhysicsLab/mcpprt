@@ -5,6 +5,7 @@
 #include <concepts>
 #include <type_traits>
 #include <exception/exception.hh>
+#include "../concepts/common.hh"
 
 namespace mcpprt::container {
 
@@ -41,7 +42,29 @@ struct static_vector {
     using iterator = value_type*;
     using const_iterator = value_type const*;
 
-    T value_[N]{};
+    T value_[N];
+
+    constexpr static_vector() noexcept = default;
+
+    constexpr static_vector(T const (&value)[N]) noexcept {
+        ::std::copy(value, value + N, this->value_);
+    }
+
+    template<typename First, typename... Rest>
+        requires (!::mcpprt::concepts::is_c_array<First> && (::std::same_as<First, Rest> && ...))
+    constexpr static_vector(First&& first, Rest&&... rest) noexcept
+        : value_{::std::forward<First>(first), ::std::forward<Rest>(rest)...} {
+    }
+
+    constexpr ~static_vector() noexcept = default;
+
+    constexpr static_vector(::mcpprt::container::static_vector<T, N> const& other) noexcept = default;
+
+    constexpr static_vector(::mcpprt::container::static_vector<T, N>&& other) noexcept = default;
+
+    constexpr static_vector& operator=(::mcpprt::container::static_vector<T, N> const& other) noexcept = default;
+
+    constexpr static_vector& operator=(::mcpprt::container::static_vector<T, N>&& other) noexcept = default;
 
     template<typename U, ::std::size_t N_r>
     [[nodiscard]]
@@ -57,7 +80,7 @@ struct static_vector {
     template<typename U, ::std::size_t N_r>
     [[nodiscard]]
     constexpr bool operator==(this ::mcpprt::container::static_vector<T, N> const& self,
-                              static_vector<U, N_r> const& other) noexcept {
+                              ::mcpprt::container::static_vector<U, N_r> const& other) noexcept {
         return self == other.value_;
     }
 
@@ -94,86 +117,51 @@ struct static_vector {
     }
 
     template<::std::size_t index>
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
     consteval auto&& at(this ::mcpprt::container::static_vector<T, N> const& self) noexcept {
         static_assert(index < N, "IndexError: out of range");
         return self.value_[index];
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto begin(this ::mcpprt::container::static_vector<T, N>& self) noexcept -> iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto begin(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto cbegin(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto end(this ::mcpprt::container::static_vector<T, N>& self) noexcept -> iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto end(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto cend(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     static constexpr ::std::size_t size() noexcept {
         return N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr const_pointer data(this static_vector<T, N> const& self) noexcept {
         return self.value_;
@@ -252,8 +240,9 @@ struct static_vector {
     }
 };
 
-template<typename Arg, typename... Args>
-    requires (::std::same_as<Arg, Args> && ...)
-static_vector(Arg, Args...) -> static_vector<Arg, sizeof...(Args) + 1>;
+template<typename First, typename... Rest>
+    requires (!(::mcpprt::concepts::is_c_array<First> && sizeof...(Rest) == 0) &&
+              (::std::same_as<::std::remove_cvref_t<First>, ::std::remove_cvref_t<Rest>> && ...))
+static_vector(First&&, Rest&&...) -> static_vector<First, sizeof...(Rest) + 1>;
 
 } // namespace mcpprt::container
