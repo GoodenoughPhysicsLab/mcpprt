@@ -45,54 +45,86 @@ struct array {
     }
 
     template<bool ndebug = false>
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
+    [[nodiscard]]
     constexpr auto&& operator[](this auto&& self, ::std::size_t index) noexcept {
         ::exception::assert_true<ndebug>(index < N);
         return ::std::forward_like<decltype(self)>(self.value_[index]);
     }
 
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
+[[nodiscard]]
     constexpr auto&& at(this auto&& self, ::std::size_t index) noexcept {
         ::exception::assert_true(index < N);
         return ::std::forward_like<decltype(self)>(self.value_[index]);
     }
 
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
+[[nodiscard]]
     constexpr auto&& front(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.value_[0]);
     }
 
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
+[[nodiscard]]
     constexpr auto&& back(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.value_[N - 1]);
     }
 
+    [[nodiscard]]
     constexpr auto&& data(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.value_.data());
     }
 
+    [[nodiscard]]
     constexpr auto begin(this auto&& self) noexcept -> iterator {
         return self.value_;
     }
 
+    [[nodiscard]]
     constexpr auto begin(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
+    [[nodiscard]]
     constexpr auto end(this auto&& self) noexcept -> iterator {
         return self.value_ + N;
     }
 
+    [[nodiscard]]
     constexpr auto end(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
+    [[nodiscard]]
     constexpr auto cbegin(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
+    [[nodiscard]]
     constexpr auto cend(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
     // TODO add reverse iterator support
 
+    [[nodiscard]]
     static constexpr auto size() noexcept -> size_type {
         return N;
     }

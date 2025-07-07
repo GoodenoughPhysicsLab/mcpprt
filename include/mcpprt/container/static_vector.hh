@@ -127,81 +127,41 @@ struct static_vector {
         return self.value_[index];
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto begin(this ::mcpprt::container::static_vector<T, N>& self) noexcept -> iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto begin(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto cbegin(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto end(this ::mcpprt::container::static_vector<T, N>& self) noexcept -> iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto end(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr auto cend(this ::mcpprt::container::static_vector<T, N> const& self) noexcept -> const_iterator {
         return self.value_ + N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     static constexpr ::std::size_t size() noexcept {
         return N;
     }
 
-#if __has_cpp_attribute(__gnu__::__always_inline__)
-    [[__gnu__::__always_inline__]]
-#elif __has_cpp_attribute(msvc::forceinline)
-    [[msvc::forceinline]]
-#endif
     [[nodiscard]]
     constexpr const_pointer data(this static_vector<T, N> const& self) noexcept {
         return self.value_;
