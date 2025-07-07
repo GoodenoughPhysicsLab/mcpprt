@@ -26,6 +26,7 @@ concept is_static_vector = ::mcpprt::container::details::is_static_vector_<::std
 
 /**
  * @brief use vector in compile time without C++ exception
+ * @note This struct must be trivial
  */
 template<typename T, ::std::size_t N>
 struct static_vector {
@@ -41,7 +42,7 @@ struct static_vector {
     using iterator = value_type*;
     using const_iterator = value_type const*;
 
-    T value_[N]{};
+    T value_[N];
 
     template<typename U, ::std::size_t N_r>
     [[nodiscard]]
