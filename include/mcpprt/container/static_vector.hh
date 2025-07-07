@@ -117,6 +117,11 @@ struct static_vector {
     }
 
     template<::std::size_t index>
+#if __has_cpp_attribute(__gnu__::__always_inline__)
+    [[__gnu__::__always_inline__]]
+#elif __has_cpp_attribute(msvc::forceinline)
+    [[msvc::forceinline]]
+#endif
     consteval auto&& at(this ::mcpprt::container::static_vector<T, N> const& self) noexcept {
         static_assert(index < N, "IndexError: out of range");
         return self.value_[index];

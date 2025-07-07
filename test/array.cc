@@ -13,6 +13,14 @@ consteval void test_index() noexcept {
     static_assert(_0.back() == 3);
 }
 
+inline void test_iterator() noexcept {
+    ::mcpprt::container::array _0{1, 2, 3};
+    for (auto _ : _0) {
+    }
+}
+
 int main() noexcept {
+    ::test_iterator();
+
     return 0;
 }

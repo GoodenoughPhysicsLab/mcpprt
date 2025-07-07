@@ -67,20 +67,28 @@ struct array {
         return ::std::forward_like<decltype(self)>(self.value_.data());
     }
 
-    constexpr auto&& begin(this auto&& self) noexcept {
-        return ::std::forward_like<decltype(self)>(self.data.begin());
+    constexpr auto begin(this auto&& self) noexcept -> iterator {
+        return self.value_;
     }
 
-    constexpr auto&& end(this auto&& self) noexcept {
-        return ::std::forward_like<decltype(self)>(self.data.end());
+    constexpr auto begin(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
+        return self.value_;
+    }
+
+    constexpr auto end(this auto&& self) noexcept -> iterator {
+        return self.value_ + N;
+    }
+
+    constexpr auto end(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
+        return self.value_ + N;
     }
 
     constexpr auto cbegin(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
-        return self.value_.cbegin();
+        return self.value_;
     }
 
     constexpr auto cend(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
-        return self.value_.cend();
+        return self.value_ + N;
     }
 
     // TODO add reverse iterator support
