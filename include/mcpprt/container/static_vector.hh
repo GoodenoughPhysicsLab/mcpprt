@@ -245,13 +245,4 @@ template<typename First, typename... Rest>
               (::std::same_as<::std::remove_cvref_t<First>, ::std::remove_cvref_t<Rest>> && ...))
 static_vector(First&&, Rest&&...) -> static_vector<First, sizeof...(Rest) + 1>;
 
-template<typename T, ::std::size_t N>
-constexpr ::mcpprt::container::static_vector<T, N> make_static_vector(T const (&arr)[N]) noexcept {
-    ::mcpprt::container::static_vector<T, N> result;
-    for (::std::size_t i{}; i < N; ++i) {
-        result.value_[i] = arr[i];
-    }
-    return result;
-}
-
 } // namespace mcpprt::container
