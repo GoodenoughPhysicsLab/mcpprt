@@ -99,7 +99,7 @@ consteval void test_find() noexcept {
     static_assert(find<_1, _2>().value() == 7);
 }
 
-template<string Str>
+template<::mcpprt::container::static_string Str>
 class Test {};
 
 consteval void test_metastr_in_template() noexcept {
@@ -109,7 +109,7 @@ consteval void test_metastr_in_template() noexcept {
 inline void runtime_test_iter() noexcept {
     constexpr auto _1 = ::mcpprt::container::basic_static_string{"abc"};
     for (auto ch : _1) {
-        ctb::exception::assert_true(ch == 'a' || ch == 'b' || ch == 'c');
+        ::exception::assert_true(ch == 'a' || ch == 'b' || ch == 'c');
     }
 }
 
