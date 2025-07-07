@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstddef>
-#include <algorithm>
+#include <utility>
+#include <exception/exception.hh>
 
 namespace mcpprt::container {
 
@@ -23,6 +24,29 @@ struct array {
 
     T value_[N];
 
+    template<bool ndebug = false>
+    constexpr auto&& operator[](this auto&& self, ::std::size_t index) noexcept {
+        ::exception::assert_true<ndebug>(index < N);
+        return ::std::forward_like<decltype(self)>(self.value_[index]);
+    }
+
+    constexpr auto&& at(this auto&& self, ::std::size_t index) noexcept {
+        ::exception::assert_true(index < N);
+        return ::std::forward_like<decltype(self)>(self.value_[index]);
+    }
+
+    constexpr auto&& front(this auto&& self) noexcept {
+        return ::std::forward_like<decltype(self)>(self.value_[0]);
+    }
+
+    constexpr auto&& back(this auto&& self) noexcept {
+        return ::std::forward_like<decltype(self)>(self.value_[N - 1]);
+    }
+
+    constexpr auto&& data(this auto&& self) noexcept {
+        return ::std::forward_like<decltype(self)>(self.value_.data());
+    }
+
     constexpr auto&& begin(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.data.begin());
     }
@@ -37,10 +61,6 @@ struct array {
 
     constexpr auto cend(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
         return self.value_.cend();
-    }
-
-    constexpr auto&& data(this auto&& self) noexcept {
-        return ::std::forward_like<decltype(self)>(self.val_.data());
     }
 };
 
