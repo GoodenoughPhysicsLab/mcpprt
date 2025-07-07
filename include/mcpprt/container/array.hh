@@ -2,15 +2,15 @@
 
 #include <cstddef>
 #include <algorithm>
-#include "static_vector.hh"
 
 namespace mcpprt::container {
 
+/**
+ * @brief https://en.cppreference.com/w/cpp/container/array.html
+ * @note This struct must be trivial
+ */
 template<typename T, ::std::size_t N>
-class array {
-    ::mcpprt::container::static_vector<T, N> val_;
-
-public:
+struct array {
     using value_type = T;
     using size_type = ::std::size_t;
     using diffrence_type = ::std::ptrdiff_t;
@@ -21,22 +21,7 @@ public:
     using iterator = value_type*;
     using const_iterator = value_type const*;
 
-    constexpr array() noexcept = default;
-
-    constexpr array(T const (&arr)[N]) noexcept {
-        ::std::copy(arr, arr + N, val_.begin());
-    }
-
-    template<typename First, typename... Args>
-        requires (::std::same_as<First, Args> && ...)
-    constexpr array(First&& first, Args&&... args) noexcept
-        : val_{::std::forward<First>(first), ::std::forward<Args>(args)...} {
-    }
-
-    constexpr array(::mcpprt::container::array<T, N> const& other) noexcept = default;
-
-    constexpr ::mcpprt::container::array<T, N>& operator=(
-        this ::mcpprt::container::array<T, N>& self, ::mcpprt::container::array<T, N> const& other) noexcept = default;
+    T value_[N];
 
     constexpr auto&& begin(this auto&& self) noexcept {
         return ::std::forward_like<decltype(self)>(self.data.begin());
@@ -47,11 +32,11 @@ public:
     }
 
     constexpr auto cbegin(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
-        return self.val_.cbegin();
+        return self.value_.cbegin();
     }
 
     constexpr auto cend(this ::mcpprt::container::array<T, N> const& self) noexcept -> const_iterator {
-        return self.val_.cend();
+        return self.value_.cend();
     }
 
     constexpr auto&& data(this auto&& self) noexcept {
@@ -59,7 +44,7 @@ public:
     }
 };
 
-template<typename First, typename... Args>
-array(First&&, Args&&...) -> array<First, sizeof...(Args) + 1>;
+template<typename First, typename... Rest>
+array(First&&, Rest&&...) -> array<First, sizeof...(Rest) + 1>;
 
 } // namespace mcpprt::container

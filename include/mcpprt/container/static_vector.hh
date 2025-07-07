@@ -5,6 +5,7 @@
 #include <concepts>
 #include <type_traits>
 #include <exception/exception.hh>
+#include "../concepts/common.hh"
 
 namespace mcpprt::container {
 
@@ -26,7 +27,6 @@ concept is_static_vector = ::mcpprt::container::details::is_static_vector_<::std
 
 /**
  * @brief use vector in compile time without C++ exception
- * @note This struct must be trivial
  */
 template<typename T, ::std::size_t N>
 struct static_vector {
@@ -43,6 +43,28 @@ struct static_vector {
     using const_iterator = value_type const*;
 
     T value_[N];
+
+    constexpr static_vector() noexcept = default;
+
+    constexpr static_vector(T const (&value)[N]) noexcept {
+        ::std::copy(value, value + N, this->value_);
+    }
+
+    template<typename First, typename... Rest>
+        requires (!::mcpprt::concepts::is_c_array<First> && (::std::same_as<First, Rest> && ...))
+    constexpr static_vector(First&& first, Rest&&... rest) noexcept
+        : value_{::std::forward<First>(first), ::std::forward<Rest>(rest)...} {
+    }
+
+    constexpr ~static_vector() noexcept = default;
+
+    constexpr static_vector(::mcpprt::container::static_vector<T, N> const& other) noexcept = default;
+
+    constexpr static_vector(::mcpprt::container::static_vector<T, N>&& other) noexcept = default;
+
+    constexpr static_vector& operator=(::mcpprt::container::static_vector<T, N> const& other) noexcept = default;
+
+    constexpr static_vector& operator=(::mcpprt::container::static_vector<T, N>&& other) noexcept = default;
 
     template<typename U, ::std::size_t N_r>
     [[nodiscard]]
@@ -253,8 +275,9 @@ struct static_vector {
     }
 };
 
-template<typename Arg, typename... Args>
-    requires (::std::same_as<Arg, Args> && ...)
-static_vector(Arg, Args...) -> static_vector<Arg, sizeof...(Args) + 1>;
+template<typename First, typename... Rest>
+    requires (!(::mcpprt::concepts::is_c_array<First> && sizeof...(Rest) == 0) &&
+              (::std::same_as<::std::remove_cvref_t<First>, ::std::remove_cvref_t<Rest>> && ...))
+static_vector(First&&, Rest&&...) -> static_vector<First, sizeof...(Rest) + 1>;
 
 } // namespace mcpprt::container

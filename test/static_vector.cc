@@ -1,9 +1,13 @@
+#include <cstddef>
 #include <cstdint>
 #include <exception/exception.hh>
 #include <mcpprt/container/static_vector.hh>
 #include <type_traits>
 
 struct X {};
+
+template<::mcpprt::container::static_vector str>
+constexpr void useless() noexcept {}
 
 consteval void test_init() noexcept {
     [[maybe_unused]] constexpr auto _1 = ::mcpprt::container::static_vector{X{}, X{}};
@@ -12,7 +16,9 @@ consteval void test_init() noexcept {
     int arr[]{1u, 2u};
     [[maybe_unused]] auto _4 = ::mcpprt::container::static_vector{arr};
     [[maybe_unused]] constexpr ::mcpprt::container::static_vector<int, 2> _5{};
-    [[maybe_unused]] constexpr ::mcpprt::container::static_vector<::std::size_t, 4> _6{1, 2};
+    [[maybe_unused]] constexpr ::mcpprt::container::static_vector<::std::ptrdiff_t, 4> _6{1, 2};
+    [[maybe_unused]] constexpr ::mcpprt::container::static_vector _7{"test"};
+    ::useless<"test">();
 }
 
 consteval void test_eq() noexcept {
