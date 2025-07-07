@@ -163,8 +163,8 @@ struct static_vector {
     }
 
     [[nodiscard]]
-    constexpr const_pointer data(this static_vector<T, N> const& self) noexcept {
-        return self.value_;
+    constexpr auto&& data(this auto&& self) noexcept {
+        return ::std::forward_like<decltype(self)>(self.value_);
     }
 
     template<::std::size_t Start, ::std::size_t End>

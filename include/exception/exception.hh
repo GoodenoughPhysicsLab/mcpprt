@@ -26,7 +26,7 @@ namespace exception {
 [[msvc::forceinline]]
 #endif
 [[noreturn]]
-inline void terminate() noexcept {
+constexpr void terminate() noexcept {
     // https://llvm.org/doxygen/Compiler_8h_source.html
 #if defined(__has_builtin) && __has_builtin(__builtin_trap)
     __builtin_trap();

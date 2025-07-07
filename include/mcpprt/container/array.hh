@@ -89,7 +89,7 @@ struct array {
 
     [[nodiscard]]
     constexpr auto&& data(this auto&& self) noexcept {
-        return ::std::forward_like<decltype(self)>(self.value_.data());
+        return ::std::forward_like<decltype(self)>(self.value_);
     }
 
     [[nodiscard]]
